@@ -12,8 +12,7 @@ class DataWeatherWidget extends StatelessWidget {
     return StreamBuilder(
       stream: FirebaseFirestore.instance.collection('weather_item').snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (!snapshot.hasData) {
-          print('1111111111111');
+        if (snapshot.data?.docs.isEmpty ?? true) {
           return const Center(
             child: Text(
               'Список пуст',
@@ -38,6 +37,7 @@ class DataWeatherWidget extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class _CardDataWeather extends StatelessWidget {
   AsyncSnapshot<QuerySnapshot> snapshot;
   final int index;
