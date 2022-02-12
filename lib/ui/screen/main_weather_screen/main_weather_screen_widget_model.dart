@@ -26,6 +26,7 @@ class MainWeatherScreenWidgetModel extends ChangeNotifier {
 
   Future<void> _loadWeather(String lat, String lon) async {
     try {
+      errorMessage = '';
       _weatherData = await _apiClient.weatherLoad(lat, lon);
       notifyListeners();
     } catch (_) {
@@ -36,12 +37,14 @@ class MainWeatherScreenWidgetModel extends ChangeNotifier {
 
   Future<void> addDataWeather() async {
     if (weatherData?.main.temp == null) return;
+    final _dateFormat = DateFormat('', 'ru').add_yMd().add_Hms();
+    final dateNow = _dateFormat.format(DateTime.now());
     final addbase = FirebaseFirestore.instance.collection('weather_item');
     addbase.add(<String, dynamic>{
       'temp': weatherData?.main.temp ?? '',
       'speed': weatherData?.wind.speed ?? '',
       'humidity': weatherData?.main.humidity ?? '',
-      'data': date,
+      'data': dateNow,
     });
     snackMessage = 'Данные добавлены';
     notifyListeners();
@@ -50,6 +53,8 @@ class MainWeatherScreenWidgetModel extends ChangeNotifier {
   Future<void> determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
+    snackMessage = '';
+    errorMessage = '';
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       errorMessage = 'Службы геолокации отключены';

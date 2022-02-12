@@ -25,7 +25,6 @@ class _MainWeatherScreenWidgetState extends State<MainWeatherScreenWidget> {
                 content: Text(snackMessage),
               )));
     }
-
     super.didChangeDependencies();
   }
 
