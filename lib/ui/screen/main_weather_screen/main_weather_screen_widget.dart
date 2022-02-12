@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:weather_firebase/ui/screen/main_weather_screen/main_weather_screen_widget_model.dart';
 import 'package:weather_firebase/ui/themes/app_colors.dart';
-
 import 'package:weather_firebase/ui/themes/app_text_style.dart';
 
 class MainWeatherScreenWidget extends StatefulWidget {
@@ -32,35 +31,33 @@ class _MainWeatherScreenWidgetState extends State<MainWeatherScreenWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final data = context.watch<MainWeatherScreenWidgetModel>().stringFromDate();
-    final errorMessage =
-        context.watch<MainWeatherScreenWidgetModel>().errorMessage;
-    return Stack(
-      children: [
-        Column(
-          children: [
-            const SizedBox(height: 10),
-            errorMessage.isEmpty
-                ? const _CardWeatherWidget()
-                : _ErrorText(errorMessage: errorMessage),
-            const SizedBox(height: 10),
-            _TextWidget(text: data, size: 50),
-            const SizedBox(height: 10),
-            const RepaintBoundary(
-              child: SizedBox(
-                width: 200,
-                height: 50,
-                child: Center(child: _TimerWidget()),
+    final model = context.watch<MainWeatherScreenWidgetModel>();
+    return Scaffold(
+      floatingActionButton: const _AddWeatherInFB(),
+      body: RefreshIndicator(
+        onRefresh: () => model.determinePosition(),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              model.errorMessage.isEmpty
+                  ? const _CardWeatherWidget()
+                  : _ErrorText(errorMessage: model.errorMessage),
+              const SizedBox(height: 10),
+              _TextWidget(text: model.date, size: 50),
+              const SizedBox(height: 10),
+              const RepaintBoundary(
+                child: SizedBox(
+                  width: 200,
+                  height: 50,
+                  child: Center(child: _TimerWidget()),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-        const Positioned(
-          bottom: 15,
-          right: 15,
-          child: _AddWeatherInFB(),
-        ),
-      ],
+      ),
     );
   }
 }
@@ -131,7 +128,7 @@ class _CardWeatherWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _TextWidget(
-                  text: '${weatherData.main.temp} \u00b0',
+                  text: '${weatherData.main.temp.toInt()} \u00b0',
                   size: 50,
                 ),
                 Image.network(

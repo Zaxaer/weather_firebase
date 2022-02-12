@@ -58,14 +58,14 @@ class _CardDataWeather extends StatelessWidget {
       },
       key: Key(snapshot.data!.docs[index].id),
       child: ListTile(
-        title: Text(model.value(index, 'temp', snapshot),
+        title: Text('${model.value(index, 'temp', snapshot)} \u00b0 C',
             style: AppTextStyle.button.copyWith(fontSize: 16)),
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Text(model.value(index, 'humidity', snapshot),
+            Text('${model.value(index, 'humidity', snapshot)} %',
                 style: AppTextStyle.button.copyWith(fontSize: 16)),
-            Text(model.value(index, 'speed', snapshot),
+            Text('${model.value(index, 'speed', snapshot)} м/с',
                 style: AppTextStyle.button.copyWith(fontSize: 16)),
           ],
         ),
