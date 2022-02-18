@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:weather_firebase/ui/screen/main_weather_screen/main_weather_screen_widget_model.dart';
@@ -33,29 +34,23 @@ class _MainWeatherScreenWidgetState extends State<MainWeatherScreenWidget> {
     final model = context.watch<MainWeatherScreenWidgetModel>();
     return Scaffold(
       floatingActionButton: const _AddWeatherInFB(),
-      body: RefreshIndicator(
-        onRefresh: () => model.determinePosition(),
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
-              model.errorMessage.isEmpty
-                  ? const _CardWeatherWidget()
-                  : _ErrorText(errorMessage: model.errorMessage),
-              const SizedBox(height: 10),
-              _TextWidget(text: model.date, size: 50),
-              const SizedBox(height: 10),
-              const RepaintBoundary(
-                child: SizedBox(
-                  width: 200,
-                  height: 50,
-                  child: Center(child: _TimerWidget()),
-                ),
-              ),
-            ],
+      body: Column(
+        children: [
+          const SizedBox(height: 10),
+          model.errorMessage.isEmpty
+              ? const _CardWeatherWidget()
+              : _ErrorText(errorMessage: model.errorMessage),
+          const SizedBox(height: 10),
+          _TextWidget(text: model.date, size: 50),
+          const SizedBox(height: 10),
+          const RepaintBoundary(
+            child: SizedBox(
+              width: 200,
+              height: 50,
+              child: Center(child: _TimerWidget()),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -90,11 +85,30 @@ class _AddWeatherInFB extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final addData = context.read<MainWeatherScreenWidgetModel>().addDataWeather;
-    return FloatingActionButton(
+    final model = context.read<MainWeatherScreenWidgetModel>();
+    return SpeedDial(
+      animatedIcon: AnimatedIcons.search_ellipsis,
       backgroundColor: AppColors.mainColor,
-      child: const Icon(Icons.add),
-      onPressed: () => addData(),
+      overlayOpacity: 0,
+      switchLabelPosition: true,
+      children: [
+        SpeedDialChild(
+          child: const Icon(Icons.add),
+          label: 'Save',
+          labelStyle: AppTextStyle.button,
+          labelBackgroundColor: Colors.transparent,
+          backgroundColor: AppColors.whiteColor,
+          onTap: () => model.addDataWeather(),
+        ),
+        SpeedDialChild(
+          child: const Icon(Icons.refresh),
+          label: 'Refresh',
+          labelStyle: AppTextStyle.button,
+          labelBackgroundColor: Colors.transparent,
+          backgroundColor: AppColors.whiteColor,
+          onTap: () => model.determinePosition(),
+        ),
+      ],
     );
   }
 }

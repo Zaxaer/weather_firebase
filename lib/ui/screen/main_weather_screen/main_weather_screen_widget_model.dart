@@ -78,7 +78,6 @@ class MainWeatherScreenWidgetModel extends ChangeNotifier {
     final position = await Geolocator.getCurrentPosition();
     final lat = position.latitude.toString();
     final lon = position.longitude.toString();
-
     await _loadWeather(lat, lon);
     return;
   }
