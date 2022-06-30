@@ -35,6 +35,21 @@ class MainWeatherScreenWidgetModel extends ChangeNotifier {
     }
   }
 
+  Future<void> addImage() async {
+    if (weatherData?.main.temp == null) return;
+    final _dateFormat = DateFormat('', 'ru').add_yMd().add_Hms();
+    final dateNow = _dateFormat.format(DateTime.now());
+    final addbase = FirebaseFirestore.instance.collection('weather_item');
+    addbase.add(<String, dynamic>{
+      'temp': weatherData?.main.temp ?? '',
+      'speed': weatherData?.wind.speed ?? '',
+      'humidity': weatherData?.main.humidity ?? '',
+      'data': dateNow,
+    });
+    snackMessage = 'Данные добавлены';
+    notifyListeners();
+  }
+
   Future<void> addDataWeather() async {
     if (weatherData?.main.temp == null) return;
     final _dateFormat = DateFormat('', 'ru').add_yMd().add_Hms();
